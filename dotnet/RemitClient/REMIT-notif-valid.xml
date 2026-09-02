@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Message xmlns="http://bmreports.com/XSD/2.0/remit.xsd">
+    <Version>2.0</Version>
+    <mRID>48X000000000001I-NGET-RMT-00063898</mRID>
+    <revisionNumber>3</revisionNumber>
+    <DocumentType>REMIT_document</DocumentType>
+    <Sender_MarketParticipantID>48X000000000001I</Sender_MarketParticipantID>
+    <Sender_MarketParticipantRole>A39</Sender_MarketParticipantRole>
+    <Receiver_MarketParticipantID>10X1001A1001A59Q</Receiver_MarketParticipantID>
+    <Receiver_MarketParticipantRole>A32</Receiver_MarketParticipantRole>
+    <CreatedDateTime>2026-07-29T14:00:00Z</CreatedDateTime>
+    <UnavailabilitiesOfElectricityFacilities>
+        <MessageHeading>REMIT Information</MessageHeading>
+        <EventType>Production unavailability</EventType>
+        <UnavailabilityType>Planned</UnavailabilityType>
+        <Participant_MarketParticipantID>SMARTEST</Participant_MarketParticipantID>
+        <Participant_ACERRegistrationCode>
+            <eic>48X000000000001I</eic>
+        </Participant_ACERRegistrationCode>
+        <AssetId>T_FARR-1</AssetId>
+        <AssetType>Production</AssetType>
+        <AffectedUnit>FAARW-1</AffectedUnit>
+        <AffectedUnitEIC>48W00000FAARW-13</AffectedUnitEIC>
+        <AffectedArea>N</AffectedArea>
+        <BiddingZone>10YGB----------A</BiddingZone>
+        <FuelType>Wind Onshore</FuelType>
+        <NormalCapacity>92.0</NormalCapacity>
+        <AvailableCapacity>0.0</AvailableCapacity>
+        <UnavailableCapacity>92.0</UnavailableCapacity>
+        <EventStatus>Dismissed</EventStatus>
+        <EventStart>2026-10-30T03:00:00Z</EventStart>
+        <EventEnd>2026-10-30T23:00:00Z</EventEnd>
+        <Cause>Planned outage</Cause>
+        <RelatedInformation/>
+    </UnavailabilitiesOfElectricityFacilities>
+</Message>
