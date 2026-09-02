@@ -1,0 +1,14 @@
+{
+  "name": "remit-js-client",
+  "description": "Node.js client for submitting REMIT notifications to the Elexon REMIT Submit API",
+  "author": "Softwire",
+  "private": true,
+  "dependencies": {
+    "@azure/identity": "^4.13.0",
+    "dotenv": "^17.2.3"
+  },
+  "type": "module",
+  "scripts": {
+    "client": "node --require dotenv/config client.js"
+  }
+}
