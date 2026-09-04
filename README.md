@@ -34,6 +34,14 @@ Validate your REMIT notification against the XSD schema before submitting it. Tw
 - [`remit2_0.xsd`](schemas/remit2_0.xsd) — targets `http://bmreports.com/XSD/2.0/remit.xsd`.
 - [`remit2_1.xsd`](schemas/remit2_1.xsd) — targets `http://bmreports.com/XSD/2.1/remit.xsd`.
 
+For security reasons, the REMIT Submit API also rejects notifications whose field values contain:
+
+- **Formula injection characters** — e.g. values starting with characters that spreadsheet applications interpret as formulas.
+- **Hyperlinks** — e.g. values containing links.
+- **Newlines** — line breaks are blocked to guard against log injection.
+
+Make sure your generated XML doesn't include any of the above, or the API will reject the submission.
+
 ## Response codes and messages
 
 See [`RESPONSE_CODES.md`](RESPONSE_CODES.md) for the REMIT Submit API's success/error response shapes.
