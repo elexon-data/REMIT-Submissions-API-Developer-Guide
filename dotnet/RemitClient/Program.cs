@@ -35,8 +35,11 @@ internal class Program
 
         Console.WriteLine($"Status: {(int)response.StatusCode} {response.StatusCode}");
         var responseBody = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("Response:");
-        Console.WriteLine(PrettifyJson(responseBody));
+        if (!string.IsNullOrWhiteSpace(responseBody))
+        {
+            Console.WriteLine("Response:");
+            Console.WriteLine(PrettifyJson(responseBody));
+        }
 
         if (!response.IsSuccessStatusCode)
         {
