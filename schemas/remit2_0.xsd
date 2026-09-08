@@ -322,7 +322,7 @@
   </xs:simpleType>
   <xs:simpleType name="ID_String">
     <xs:restriction base="xs:string">
-			<xs:pattern value="[A-Z0-9-]{16}-(ELXP|NGET)-RMT-[0-9]{8}"/>
+			<xs:pattern value="[A-Z0-9-]{16}-(ELXP|NGET|BMRS)-RMT-[0-9]{8}"/>
       <xs:maxLength value="34" />
     </xs:restriction>
   </xs:simpleType>
