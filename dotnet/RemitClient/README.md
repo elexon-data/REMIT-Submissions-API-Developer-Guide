@@ -10,31 +10,19 @@ This API is available in two environments, `Test` and `Prod`, each with its own 
 
 ## Configure
 
-1. Copy the settings templates:
+1. Copy the settings template:
 
    ```powershell
    # PowerShell (Windows/macOS/Linux)
-   Copy-Item appsettings.template.json appsettings.json
    Copy-Item appsettings.Test.template.json appsettings.Test.json
    ```
 
    ```bash
    # bash/zsh (macOS/Linux) or Git Bash on Windows
-   cp appsettings.template.json appsettings.json
    cp appsettings.Test.template.json appsettings.Test.json
    ```
 
-2. Edit `appsettings.json`:
-
-   ```json
-   {
-     "Environment": "Test"
-   }
-   ```
-
-   - `Environment`: which environment's credentials and API to use. Leave this as `Test` for now.
-
-3. Edit `appsettings.Test.json` and fill in your Test app registration's credentials:
+2. Edit `appsettings.Test.json` and fill in your Test app registration's credentials (see [Retrieving Credentials](../../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet):
 
    ```json
    {
@@ -48,29 +36,21 @@ This API is available in two environments, `Test` and `Prod`, each with its own 
    - `ClientId` / `ClientSecret`: your Test app registration's credentials
    - `Scope` / `SubmitApi`: the Test API's URLs. The template is already pre-filled with the correct values. You shouldn't need to change these
 
-## What it does
-
-1. Loads settings from `appsettings.json`, then overlays `appsettings.Test.json` or `appsettings.Prod.json` (whichever matches `Environment`, giving `ClientId`, `ClientSecret`, `Scope` and `SubmitApi`), then environment variables, which take priority over both files.
-2. Acquires an access token from Microsoft Entra ID.
-3. Reads the XML file at the path given on the command line.
-4. `POST`s the XML to the Submit API for the selected `Environment` with `Authorization: Bearer <token>` and `Content-Type: application/xml`.
-5. Prints the HTTP status code and response body.
-
 ## Run
 
 From the `dotnet/RemitClient` directory:
 
 ```bash
-dotnet run -- path/to/your/remit-notification.xml
+dotnet run -- --xml=path/to/your/remit-notification.xml
 ```
 
-This acquires an access token, reads the given XML file, submits it, and prints the HTTP status code and response body. A successful submission returns a `2xx` status.
+This defaults to the `Test` environment and acquires an access token, reads the given XML file, submits it, and prints the HTTP status code and response body. A successful submission returns a `2xx` status.
 
 ## Verify your submission
 
 Once you get a successful response, you can see the submission appear at [bmrs.test.elexon.co.uk/remit](https://bmrs.test.elexon.co.uk/remit).
 
-Make sure your submission is there before moving on to Prod.
+Make sure your submission is correct before moving on to Prod.
 
 ## Using the Prod environment
 
@@ -79,14 +59,16 @@ Once everything works end-to-end in `Test`, switch to `Prod` the same way, using
 1. Copy the Prod template:
 
    ```powershell
+   # PowerShell (Windows/macOS/Linux)
    Copy-Item appsettings.Prod.template.json appsettings.Prod.json
    ```
 
    ```bash
+   # bash/zsh (macOS/Linux) or Git Bash on Windows
    cp appsettings.Prod.template.json appsettings.Prod.json
    ```
 
-2. Edit `appsettings.Prod.json` and fill in your Prod app registration's credentials (`Scope`/`SubmitApi` are already pre-filled, same as for Test):
+2. Edit `appsettings.Prod.json` and fill in your Prod app registration's credentials (see [Retrieving Credentials](../../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet):
 
    ```json
    {
@@ -97,19 +79,10 @@ Once everything works end-to-end in `Test`, switch to `Prod` the same way, using
    }
    ```
 
-3. Switch to Prod, either permanently or for a single run:
+3. Run with `--env=Prod`:
 
-   - **Permanently**: change `"Environment"` in `appsettings.json` to `"Prod"`.
-   - **For a single run**, without editing the file, set the `Environment` environment variable instead:
+   ```bash
+   dotnet run -- --env=Prod --xml=path/to/your/remit-notification.xml
+   ```
 
-     ```powershell
-     # PowerShell
-     $env:Environment = "Prod"; dotnet run -- path/to/your/remit-notification.xml
-     ```
-
-     ```bash
-     # bash/zsh
-     Environment=Prod dotnet run -- path/to/your/remit-notification.xml
-     ```
-
-4. Run as before. A successful submission will appear at [bmrs.elexon.co.uk/remit](https://bmrs.elexon.co.uk/remit) instead.
+   A successful submission will appear at [bmrs.elexon.co.uk/remit](https://bmrs.elexon.co.uk/remit) instead.

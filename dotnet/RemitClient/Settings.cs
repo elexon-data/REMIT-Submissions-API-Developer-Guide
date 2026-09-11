@@ -1,26 +1,15 @@
-using System.Linq;
-
 namespace RemitClient;
 
 public sealed class Settings
 {
     public string ClientId { get; set; } = string.Empty;
     public string ClientSecret { get; set; } = string.Empty;
-    public string Environment { get; set; } = "Test";
     public string Scope { get; set; } = string.Empty;
     public string SubmitApi { get; set; } = string.Empty;
 
-    private static readonly string[] ValidEnvironments = { "Test", "Prod" };
-
-    public void Validate()
+    public void Validate(string environment)
     {
-        if (!ValidEnvironments.Contains(Environment, StringComparer.OrdinalIgnoreCase))
-        {
-            throw new InvalidOperationException(
-                $"Environment must be one of: {string.Join(", ", ValidEnvironments)}. Got '{Environment}'.");
-        }
-
-        var envFile = $"appsettings.{Environment}.json";
+        var envFile = $"appsettings.{environment}.json";
 
         if (string.IsNullOrWhiteSpace(ClientId))
         {
