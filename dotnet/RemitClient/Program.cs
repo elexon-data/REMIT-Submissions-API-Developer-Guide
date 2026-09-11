@@ -63,11 +63,6 @@ internal class Program
 
     private static string PrettifyJson(string json)
     {
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            return json;
-        }
-
         try
         {
             using var document = JsonDocument.Parse(json);
