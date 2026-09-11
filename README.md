@@ -1,12 +1,14 @@
 # REMIT clients
 
-Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) is the platform GB market participants use to publish this REMIT data, and the REMIT Submit API is how you can submit it programmatically instead of through the Elexon Portal UI.
+Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) publishes REMIT data to GB market participants. You can submit REMIT data programmatically using Insights' REMIT Submit API, instead of through the Elexon Portal UI.
 
 This repo contains example clients showing how to submit a REMIT XML notification to the Elexon REMIT Submit API.
 
 Currently we have clients written in **C#/.NET**, **Node.js**, and **Python**.
 
 ## Before you begin: generate your credentials
+
+> **Start with Test environment.** Once you've confirmed a submission works there, generate a separate set of credentials for Prod the same way, using the [Prod Insights Solution](https://bmrs.elexon.co.uk/login) instead.
 
 1. Login to the [Test Insights Solution](https://bmrs.test.elexon.co.uk/login) and go to the [Remit Submit Page](https://bmrs.test.elexon.co.uk/remit/submit).
 2. If you haven't already, generate your credentials by clicking 'Request Credentials'
@@ -22,7 +24,7 @@ Currently we have clients written in **C#/.NET**, **Node.js**, and **Python**.
 
 Each client folder has its own `README.md` with setup and run instructions. All three follow the same flow:
 
-1. Load your `ClientId`, `ClientSecret`, and the path to your REMIT XML file from a local settings file.
+1. Load your `ClientId` and `ClientSecret` from a local settings file, and provide the path to your REMIT XML file (as a command-line argument for the .NET client, or via the settings file for the others).
 2. Request an access token from Microsoft Entra ID using the `client_credentials` grant.
 3. `POST` the XML file's contents to the REMIT Submit API.
 4. Print the response.
@@ -52,10 +54,17 @@ All clients authenticate the same way:
 
 - **Token endpoint:** `POST https://login.microsoftonline.com/4203b7a0-7773-4de5-b830-8b263a20426e/oauth2/v2.0/token`
 - **Grant type:** `client_credentials`
-- **Scope:** `https://data.dev.elexon.co.uk/account-api-v2/.default`
-- **Submit endpoint:** `POST https://data.dev.elexon.co.uk/account/v2/remit/submit-api`
 
 The tenant ID above is fixed for every user, so it's hard-coded in each client rather than something you provide yourself.
+
+The scope and submit endpoint depend on which environment you're submitting to:
+
+| Environment | Scope | Submit endpoint |
+| --- | --- | --- |
+| Test | `https://data.test.elexon.co.uk/account-api-v2/.default` | `POST https://data.test.elexon.co.uk/account/v2/remit/submit-api` |
+| Prod | `https://data.elexon.co.uk/account-api-v2/.default` | `POST https://data.elexon.co.uk/account/v2/remit/submit-api` |
+
+**Start with Test**, and only move to Prod once you've confirmed a submission works there.
 
 ## Feedback
 
