@@ -19,6 +19,8 @@
 **/obj/
 *.csproj.user
 /dotnet/RemitClient/appsettings.json
+/dotnet/RemitClient/appsettings.Test.json
+/dotnet/RemitClient/appsettings.Prod.json
 /dotnet/RemitClient/data
 
 # Node.js

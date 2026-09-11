@@ -10,13 +10,19 @@ namespace RemitClient;
 internal class Program
 {
     private const string TenantId = "4203b7a0-7773-4de5-b830-8b263a20426e";
-    private const string Scope = "https://data.dev.elexon.co.uk/account-api-v2/.default";
-    private const string SubmitApi = "https://data.dev.elexon.co.uk/account/v2/remit/submit-api";
 
-    private static async Task Main()
+    private static async Task Main(string[] args)
     {
+        var bootstrapConfiguration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddEnvironmentVariables()
+            .Build();
+
+        var environmentName = bootstrapConfiguration["Environment"] ?? "Test";
+
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -25,13 +31,20 @@ internal class Program
 
         settings.Validate();
 
-        var xml = await File.ReadAllTextAsync(settings.XmlFilePath);
+        if (args.Length != 1)
+        {
+            Console.Error.WriteLine("Usage: dotnet run -- <path-to-remit-notification.xml>");
+            Environment.Exit(1);
+            return;
+        }
+
+        var xml = await File.ReadAllTextAsync(args[0]);
 
         using var client = new HttpClient();
 
         var token = await GetTokenAsync(settings);
 
-        var response = await SubmitAsync(client, token, xml);
+        var response = await SubmitAsync(client, token, xml, settings.SubmitApi);
 
         Console.WriteLine($"Status: {(int)response.StatusCode} {response.StatusCode}");
         var responseBody = await response.Content.ReadAsStringAsync();
@@ -44,6 +57,10 @@ internal class Program
         if (!response.IsSuccessStatusCode)
         {
             Console.Error.WriteLine($"Submission failed with status {(int)response.StatusCode} {response.StatusCode}.");
+            if (!string.IsNullOrWhiteSpace(responseBody))
+            {
+                Console.Error.WriteLine(PrettifyJson(responseBody));
+            }
             Environment.Exit(1);
         }
     }
@@ -65,14 +82,14 @@ internal class Program
     {
         var credential = new ClientSecretCredential(TenantId, settings.ClientId, settings.ClientSecret);
 
-        var token = await credential.GetTokenAsync(new TokenRequestContext(new[] { Scope }));
+        var token = await credential.GetTokenAsync(new TokenRequestContext(new[] { settings.Scope }));
 
         return token.Token;
     }
 
-    private static async Task<HttpResponseMessage> SubmitAsync(HttpClient client, string token, string xml)
+    private static async Task<HttpResponseMessage> SubmitAsync(HttpClient client, string token, string xml, string submitApi)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, SubmitApi)
+        var request = new HttpRequestMessage(HttpMethod.Post, submitApi)
         {
             Content = new StringContent(xml, Encoding.UTF8, "application/xml")
         };
