@@ -18,7 +18,8 @@
 **/bin/
 **/obj/
 *.csproj.user
-/dotnet/RemitClient/appsettings.json
+/dotnet/RemitClient/appsettings.Test.json
+/dotnet/RemitClient/appsettings.Prod.json
 /dotnet/RemitClient/data
 
 # Node.js
@@ -37,3 +38,6 @@ __pycache__/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# RemitClient
+*.xml
