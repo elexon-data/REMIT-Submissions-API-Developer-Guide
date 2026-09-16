@@ -1,33 +1,34 @@
-# REMIT clients
+# REMIT Submit API
 
 Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) publishes REMIT data to GB market participants. You can submit REMIT data programmatically using Insights' REMIT Submit API, instead of through the Elexon Portal UI.
 
-This repo contains example clients showing how to submit a REMIT XML notification to the Elexon REMIT Submit API.
+The REMIT Submit API is a POST endpoint accepting xml, authenticated using OAuth 2.0 with the client credentials flow.
 
-Currently we have clients written in **C#/.NET**, **Node.js**, and **Python**.
+This repository contains example clients showing how to use the REMIT Submit API. Currently we have clients written in **C#/.NET**, **Node.js**, and **Python**.
 
 ## Before you begin: generate your credentials
 
-> **Start with Test environment.** Once you've confirmed a submission works there, generate a separate set of credentials for Prod the same way, using the [Prod Insights Solution](https://bmrs.elexon.co.uk/login) instead.
+> **Start with the [Test Insights Solution](https://bmrs.test.elexon.co.uk/login).** You can use this to test your setup and rehearse submissions.
 
-1. Login to the [Test Insights Solution](https://bmrs.test.elexon.co.uk/login) and go to the [Remit Submit Page](https://bmrs.test.elexon.co.uk/remit/submit).
-2. If you haven't already, generate your credentials by clicking 'Request Credentials'
+1. Login to the Insights website ([Test](https://bmrs.test.elexon.co.uk/login) or [Prod](https://bmrs.elexon.co.uk/login)) and navigate to Submit a REMIT Report.
+2. Generate your credentials by clicking 'Request Credentials'
    ![request-credentials](images/request-credentials.png)
 3. You will see a pop-up that shows your new client secret. Make sure you copy that, as it won't be shown again.
 4. Note down your **Client ID** and **Client secret**. You will use them when calling the API.
 
-## Supported languages
+## Authentication
 
-- [C# / .NET](dotnet/RemitClient/README.md)
-- [Node.js](nodeJs/README.md)
-- [Python](python/README.md)
+Use your client ID and client secret to fetch your access token using the following details:
 
-Each client folder has its own `README.md` with setup and run instructions. All three follow the same flow:
+- **Token endpoint:** `POST https://login.microsoftonline.com/4203b7a0-7773-4de5-b830-8b263a20426e/oauth2/v2.0/token`
+- **Grant type:** `client_credentials`
 
-1. Load your `ClientId` and `ClientSecret` from a local settings file, and provide the path to your REMIT XML file (as a command-line argument for the .NET client, or via the settings file for the others).
-2. Request an access token from Microsoft Entra ID using the `client_credentials` grant.
-3. `POST` the XML file's contents to the REMIT Submit API.
-4. Print the response.
+The scope and submit endpoint are dependent on environment:
+
+| Environment | Scope | Submit endpoint |
+| --- | --- | --- |
+| Test | `https://data.test.elexon.co.uk/account-api-v2/.default` | `POST https://data.test.elexon.co.uk/account/v2/remit/submit-api` |
+| Prod | `https://data.elexon.co.uk/account-api-v2/.default` | `POST https://data.elexon.co.uk/account/v2/remit/submit-api` |
 
 ## Writing your REMIT XML
 
@@ -42,29 +43,25 @@ For security reasons, the REMIT Submit API also rejects notifications whose fiel
 - **Hyperlinks** — e.g. values containing links.
 - **Newlines** — line breaks are blocked to guard against log injection.
 
-Make sure your generated XML doesn't include any of the above, or the API will reject the submission.
+You can validate your submission against the Test environment, and view your published submission on Test Insights, before submitting it on Prod.
 
 ## Response codes and messages
 
-See [`RESPONSE_CODES.md`](RESPONSE_CODES.md) for the REMIT Submit API's success/error response shapes.
+See [`Response codes`](RESPONSE_CODES.md) for the REMIT Submit API's success/error response shapes.
 
-## Auth details
+## Example clients
 
-All clients authenticate the same way:
+We provide example clients in the following languages:
+- [C# / .NET](dotnet/RemitClient/README.md)
+- [Node.js](nodeJs/README.md)
+- [Python](python/README.md)
 
-- **Token endpoint:** `POST https://login.microsoftonline.com/4203b7a0-7773-4de5-b830-8b263a20426e/oauth2/v2.0/token`
-- **Grant type:** `client_credentials`
+Each client folder has its own `README.md` with setup and run instructions. All three follow the same flow:
 
-The tenant ID above is fixed for every user, so it's hard-coded in each client rather than something you provide yourself.
-
-The scope and submit endpoint depend on which environment you're submitting to:
-
-| Environment | Scope | Submit endpoint |
-| --- | --- | --- |
-| Test | `https://data.test.elexon.co.uk/account-api-v2/.default` | `POST https://data.test.elexon.co.uk/account/v2/remit/submit-api` |
-| Prod | `https://data.elexon.co.uk/account-api-v2/.default` | `POST https://data.elexon.co.uk/account/v2/remit/submit-api` |
-
-**Start with Test**, and only move to Prod once you've confirmed a submission works there.
+1. Load the `ClientId` and `ClientSecret` from a local settings file, and provide the path to your REMIT XML file (as a command-line argument for the .NET client, or via the settings file for the others).
+2. Request an access token from Microsoft Entra ID using the `client_credentials` grant.
+3. `POST` the XML file's contents to the REMIT Submit API.
+4. Print the response.
 
 ## Feedback
 
