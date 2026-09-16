@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://bmreports.com/XSD/2.0/remit.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://bmreports.com/XSD/2.0/remit.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Message" type="MessageType"/>
+  <xs:complexType name="MessageType">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Version" type="XSDVersion"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="mRID" type="ID_String">
+				<xs:annotation>
+					<xs:documentation>This field aims to capture the identifier of the message issued by the market participant or by someone acting on its behalf. UMMs related to the same event may be updated several times before and during the event. Inside information publication may require a prognosis, for example regarding the duration of the event. Such prognosis contains an element of uncertainty and should be based on all available data and analysis prepared with reasonable effort at the time of publication. If the prognosis or the level or certainty changes over time, the publication should be updated accordingly.</xs:documentation>
+				</xs:annotation>
+      </xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="revisionNumber" type="ESMPVersion_String"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="DocumentType" type="DocumentTypeList"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="Sender_MarketParticipantID" type="PartyID_String"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="Sender_MarketParticipantRole" type="MarketRoleKind_String"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="Receiver_MarketParticipantID" type="PartyID_String"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="Receiver_MarketParticipantRole" type="MarketRoleKind_String"/>
+      <xs:element minOccurs="1" maxOccurs="1" name="CreatedDateTime" type="ESMP_DateTime"/>
+      <xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element name="UnavailabilitiesOfElectricityFacilities" type="ElectricityMessageType">
+					<xs:annotation>
+						<xs:documentation>This message type should be used when market participants publish UMMs reporting planned or unplanned electricity unavailabilities of any size that are likely to significantly affect wholesale energy prices.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="OtherMarketInformation" type="OtherMessageType">
+					<xs:annotation>
+						<xs:documentation>This message type should be used when market participants publish UMMs that do not fall under the UnavailabilitiesOfElectricityFacilities message type. Typically these are events that are likely to significantly affect wholesale energy prices but are less structured and less frequent by nature than unavailabilities of facilities (for example: reporting corporate or market developments , commissioning a new power plant, etc.).</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+	<xs:complexType name="ElectricityMessageType">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" name="MessageHeading" type="Heading_String"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="EventType" type="REMITEventTypeList">
+				<xs:annotation>
+					<xs:documentation>The 'Type of Event' details the subject of the unavailability. "Other unavailability" covers other types of unavailabilities such as reduction station unavailability, measurement station unavailability, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="UnavailabilityType" type="UnavailabilityTypeList">
+				<xs:annotation>
+					<xs:documentation>The field 'Type of Unavailability' indicates whether the unavailability was planned or not sorting the messages into two main types that may have different timeframes and implications on the markets.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="Participant_MarketParticipantID" type="ParticipantID_String">
+				<xs:annotation>
+					<xs:documentation>The official name of the market participant that falls under the obligation of Article 4 of REMIT, regarding the specific event.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="Participant_ACERRegistrationCode" type="ACERRegistrationCode_String">
+				<xs:annotation>
+					<xs:documentation>The market participant shall identify itself or shall be identified by the third party reporting on its behalf using the ACER registration code which the market participant received or the unique market participant code which the market participant provided while registering in accordance with Article 9 of Regulation (EU) No 1227/2011.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="AssetId" type="AssetID_String"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="AssetType" type="AssetTypeList"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="AffectedUnit" type="AffectedUnit_String">
+				<xs:annotation>
+					<xs:documentation>The field 'Affected Unit' identifies and locates the unit where the event is about to occur/is occurring/occurred using its official name. The information included in the field shall relate to a specific production/consumption asset/unit or connection.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="AffectedUnitEIC" type="EICType_String">
+				<xs:annotation>
+					<xs:documentation>This field identifies the affected asset or unit by its EIC code. It includes the EIC W, T or Z code of the facility that is unavailable. The affected asset or unit EIC code has to be identified at the most granular level i.e. if the production unit for generation of electricity is made up of an aggregation of generation units, the generation unit(s) that are unavailable needs to be identified.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="AffectedArea" type="ZoneTypeList">
+				<xs:annotation>
+					<xs:documentation>The BMRS zone</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="BiddingZone" type="BiddingZoneList">
+				<xs:annotation>
+					<xs:documentation>The field 'Bidding Zone' provides the identification of the bidding zone(s) where the affected asset or unit is located using the EIC Y coding schema on the areas for inter System Operator data interchange.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="FuelType" type="FuelTypeList">
+				<xs:annotation>
+					<xs:documentation>The field 'Fuel Type' gives additional information on the source of energy used by the production or generation unit concerned.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="NormalCapacity" type="CapacityType">
+				<xs:annotation>
+					<xs:documentation>The field 'Normal capacity' measures the nominal generating/transmission/consumption capacity. It is the maximum electrical active power/ energy interchange the facility can produce/transmit /consume continuously throughout a long period of operation in normal conditions, under relevant security standards.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="AvailableCapacity" type="CapacityType">
+				<xs:annotation>
+					<xs:documentation>The field 'Available capacity' measures the capacity of the facility concerned that will not be affected by the event, i.e.: the capacity that will remain available. The available capacity must be expressed in absolute terms NOT in percentages.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="UnavailableCapacity" type="CapacityType">
+				<xs:annotation>
+					<xs:documentation>The field "Unavailable capacity" measures the capacity of the facility concerned that is affected by the event, i.e.: the capacity that will be unavailable due to the event.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="EventStatus" type="REMITEventStatusTypeList">
+				<xs:annotation>
+					<xs:documentation>The field 'Event Status' allows the distinction between UMMs that contain the most recent information on an event and can still influence trading decisions, and UMMs that are already outdated or that were updated.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="EventStart" type="ESMP_DateTime">
+				<xs:annotation>
+					<xs:documentation>The field "Event start" describes the expected (if future) or actual (if past) starting time and date of the relevant event. This field together with the 'Event end' field allows the knowledge of the timeframe of the event and the assessment of its potential impact on wholesale energy prices.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="EventEnd" type="ESMP_DateTime">
+				<xs:annotation>
+					<xs:documentation>The field 'Event end' describes the estimated (if future) or actual (if past) time and date at which the relevant event stops(ed). This field together with the 'Event start' field provides the timeframe of the event and the assessment of its potential impact on wholesale energy prices.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="OutageProfile" type="OutageProfileType"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="DurationUncertainty" type="DurationUncertainty_String"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="Cause" type="Cause_String">
+				<xs:annotation>
+					<xs:documentation>The field 'Cause' provides an explanation on the cause(s) of the unavailability.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="RelatedInformation" type="RelatedInfo_String">
+				<xs:annotation>
+					<xs:documentation>The field 'Related information' provides more detailed information on the event that allows a full understanding of its potential impact on wholesale energy prices.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OtherMessageType">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" name="MessageHeading" type="Heading_String"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="Participant_MarketParticipantID" type="ParticipantID_String">
+				<xs:annotation>
+					<xs:documentation>The official name of the market participant that falls under the obligation of Article 4 of REMIT, regarding the specific event.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="Participant_ACERRegistrationCode" type="ACERRegistrationCode_String">
+				<xs:annotation>
+					<xs:documentation>The market participant shall identify itself or shall be identified by the third party reporting on its behalf using the ACER registration code which the market participant received or the unique market participant code which the market participant provided while registering in accordance with Article 9 of Regulation (EU) No 1227/2011.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="AssetId" type="AssetID_String"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="AssetType" type="AssetTypeList"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="AffectedArea" type="ZoneTypeList">
+				<xs:annotation>
+					<xs:documentation>The BMRS zone</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="EventStatus" type="REMITEventStatusTypeList">
+				<xs:annotation>
+					<xs:documentation>The field 'Event Status' allows the distinction between UMMs that contain the most recent information on an event and can still influence trading decisions, and UMMs that are already outdated or that were updated.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="1" maxOccurs="1" name="EventStart" type="ESMP_DateTime">
+				<xs:annotation>
+					<xs:documentation>The field "Event start" describes the expected (if future) or actual (if past) starting time and date of the relevant event. This field together with the 'Event end' field allows the knowledge of the timeframe of the event and the assessment of its potential impact on wholesale energy prices.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="EventEnd" type="ESMP_DateTime">
+				<xs:annotation>
+					<xs:documentation>The field 'Event end' describes the estimated (if future) or actual (if past) time and date at which the relevant event stops(ed). This field together with the 'Event start' field provides the timeframe of the event and the assessment of its potential impact on wholesale energy prices.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="OutageProfile" type="OutageProfileType"/>
+			<xs:element minOccurs="0" maxOccurs="1" name="DurationUncertainty" type="DurationUncertainty_String"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="Cause" type="Cause_String">
+				<xs:annotation>
+					<xs:documentation>The field 'Cause' provides an explanation on the cause(s) of the unavailability.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="1" name="RelatedInformation" type="RelatedInfo_String">
+				<xs:annotation>
+					<xs:documentation>The field 'Related information' provides more detailed information on the event that allows a full understanding of its potential impact on wholesale energy prices.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ACERRegistrationCode_String">
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:element name="ace" type="ace"/>
+			<xs:element name="lei" type="lei"/>
+			<xs:element name="bic" type="bic"/>
+			<xs:element name="eic" type="eic"/>
+			<xs:element name="gln" type="gln"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:simpleType name="ace">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="12"/>
+			<xs:minLength value="12"/>
+			<xs:pattern value="[A-Za-z0-9_]+\.[A-Z][A-Z]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="lei">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"/>
+			<xs:minLength value="20"/>
+			<xs:pattern value="[A-Za-z0-9_]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="bic">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="11"/>
+			<xs:minLength value="11"/>
+			<xs:pattern value="[A-Za-z0-9_]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="eic">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16"/>
+			<xs:minLength value="16"/>
+			<xs:pattern value="[0-9][0-9][XYZTWV].+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="gln">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="13"/>
+			<xs:minLength value="13"/>
+			<xs:pattern value="[A-Za-z0-9_-]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+  <xs:simpleType name="AffectedArea_String">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="3" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AffectedUnit_String">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="50" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AssetID_String">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="18" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AssetTypeList">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Production" />
+      <xs:enumeration value="Consumption" />
+      <xs:enumeration value="Transmission" />
+      <xs:enumeration value="Distribution" />
+    </xs:restriction>
+  </xs:simpleType>
+	<xs:simpleType name="BiddingZoneList">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16"/>
+			<xs:minLength value="16"/>
+			<xs:pattern value="[0-9][0-9][XYZTWV].+"/>
+		</xs:restriction>
+	</xs:simpleType>
+  <xs:simpleType name="CapacityType">
+    <xs:restriction base="xs:decimal">
+      <xs:fractionDigits value="3" />
+      <xs:totalDigits value="13" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Cause_String">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="500" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DocumentTypeList">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="REMIT_document" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DurationUncertainty_String">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="50" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EICType_String">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Z0-9-]{16}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ESMP_DateTime">
+    <xs:restriction base="xs:dateTime">
+      <xs:pattern value="((([0-9]{4})[\-](0[13578]|1[02])[\-](0[1-9]|[12][0-9]|3[01])|([0-9]{4})[\-]((0[469])|(11))[\-](0[1-9]|[12][0-9]|30))T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])Z)|(([13579][26][02468][048]|[13579][01345789](0)[48]|[13579][01345789][2468][048]|[02468][048][02468][048]|[02468][1235679](0)[48]|[02468][1235679][2468][048]|[0-9][0-9][13579][26])[\-](02)[\-](0[1-9]|1[0-9]|2[0-9])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])Z)|(([13579][26][02468][1235679]|[13579][01345789](0)[01235679]|[13579][01345789][2468][1235679]|[02468][048][02468][1235679]|[02468][1235679](0)[01235679]|[02468][1235679][2468][1235679]|[0-9][0-9][13579][01345789])[\-](02)[\-](0[1-9]|1[0-9]|2[0-8])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])Z)" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ESMPVersion_String">
+    <xs:restriction base="xs:positiveInteger">
+      <xs:minInclusive value="1" />
+			<xs:maxInclusive value="999" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="FuelTypeList">
+    <xs:restriction base="xs:string">
+			<xs:enumeration value="Biomass"/>
+			<xs:enumeration value="Fossil Brown coal/Lignite"/>
+			<xs:enumeration value="Fossil Coal-derived gas"/>
+			<xs:enumeration value="Fossil Gas"/>
+			<xs:enumeration value="Fossil Hard coal"/>
+			<xs:enumeration value="Fossil Oil"/>
+			<xs:enumeration value="Fossil Oil shale"/>
+			<xs:enumeration value="Fossil Peat"/>
+			<xs:enumeration value="Geothermal"/>
+			<xs:enumeration value="Hydro Pumped Storage"/>
+			<xs:enumeration value="Hydro Run-of-river and poundage"/>
+			<xs:enumeration value="Hydro Water Reservoir"/>
+			<xs:enumeration value="Marine"/>
+			<xs:enumeration value="Nuclear"/>
+			<xs:enumeration value="Other renewable"/>
+			<xs:enumeration value="Solar"/>
+			<xs:enumeration value="Waste"/>
+			<xs:enumeration value="Wind Offshore"/>
+			<xs:enumeration value="Wind Onshore"/>
+			<xs:enumeration value="Other"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Heading_String">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="150" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ID_String">
+    <xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z0-9-]{16}-(ELXP|NGET|BMRS)-RMT-[0-9]{8}"/>
+      <xs:maxLength value="34" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="LocalRoleType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:minLength value="3"/>
+      <xs:maxLength value="3"/>
+      <xs:enumeration value="A01"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MarketRoleKind_String">
+    <xs:restriction base="RoleTypeList" />
+  </xs:simpleType>
+  <xs:complexType name="OutageProfileType">
+    <xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="200" name="OutageProfileSegment" type="OutageProfileSegmentType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OutageProfileSegmentType">
+		<xs:sequence>
+			<xs:element name="OutageProfileSegmentStart" minOccurs="1" maxOccurs="1" type="ESMP_DateTime" />
+			<xs:element name="OutageProfileSegmentEnd" minOccurs="1" maxOccurs="1" type="ESMP_DateTime" />
+			<xs:element name="OutageProfileSegmentCapacity" minOccurs="1" maxOccurs="1" type="CapacityType" />
+		</xs:sequence>
+	</xs:complexType>
+  <xs:simpleType name="ParticipantID_String">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:maxLength value="8" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PartyID_String">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Z0-9-]{16}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RelatedInfo_String">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="500" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="REMITEventStatusTypeList">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Active" />
+      <xs:enumeration value="Dismissed" />
+      <xs:enumeration value="Inactive" />
+    </xs:restriction>
+  </xs:simpleType>
+	<xs:simpleType name="REMITEventTypeList">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Production unavailability" />
+      <xs:enumeration value="Transmission unavailability" />
+      <xs:enumeration value="Consumption unavailability" />
+      <xs:enumeration value="Other unavailability" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RoleTypeList">
+    <xs:union memberTypes="StandardRoleTypeList LocalRoleType"/>
+  </xs:simpleType>
+  <xs:simpleType name="StandardRoleTypeList">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="A01">
+        <xs:annotation>
+          <xs:documentation>Trade responsible party</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A02">
+        <xs:annotation>
+          <xs:documentation>Consumption responsible party</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A03">
+        <xs:annotation>
+          <xs:documentation>Combined power exchange (not to be used)</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A04">
+        <xs:annotation>
+          <xs:documentation>System operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A05">
+        <xs:annotation>
+          <xs:documentation>Imbalance settlement responsible</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A06">
+        <xs:annotation>
+          <xs:documentation>Production responsible party</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A07">
+        <xs:annotation>
+          <xs:documentation>Transmission capacity allocator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A08">
+        <xs:annotation>
+          <xs:documentation>Balance responsible party</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A09">
+        <xs:annotation>
+          <xs:documentation>Metered data aggregator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A10">
+        <xs:annotation>
+          <xs:documentation>Billing agent</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A11">
+        <xs:annotation>
+          <xs:documentation>Market operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A12">
+        <xs:annotation>
+          <xs:documentation>Balance supplier</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A13">
+        <xs:annotation>
+          <xs:documentation>Consumer</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A14">
+        <xs:annotation>
+          <xs:documentation>Control area operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A15">
+        <xs:annotation>
+          <xs:documentation>Control block operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A16">
+        <xs:annotation>
+          <xs:documentation>Coordination center operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A17">
+        <xs:annotation>
+          <xs:documentation>Grid access provider</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A18">
+        <xs:annotation>
+          <xs:documentation>Grid operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A19">
+        <xs:annotation>
+          <xs:documentation>Meter administrator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A20">
+        <xs:annotation>
+          <xs:documentation>Party connected to grid</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A21">
+        <xs:annotation>
+          <xs:documentation>Producer</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A22">
+        <xs:annotation>
+          <xs:documentation>Profile maintenance party</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A23">
+        <xs:annotation>
+          <xs:documentation>Meter operator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A24">
+        <xs:annotation>
+          <xs:documentation>Metered data collector</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A25">
+        <xs:annotation>
+          <xs:documentation>Metered data responsible</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A26">
+        <xs:annotation>
+          <xs:documentation>Metering point administrator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A27">
+        <xs:annotation>
+          <xs:documentation>Resource Provider</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A28">
+        <xs:annotation>
+          <xs:documentation>Scheduling coordinator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A29">
+        <xs:annotation>
+          <xs:documentation>Capacity Trader</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A30">
+        <xs:annotation>
+          <xs:documentation>Interconnection Trade Responsible</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A31">
+        <xs:annotation>
+          <xs:documentation>Nomination Validator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A32">
+        <xs:annotation>
+          <xs:documentation>Market information aggregator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A33">
+        <xs:annotation>
+          <xs:documentation>Information receiver</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A34">
+        <xs:annotation>
+          <xs:documentation>Reserve Allocator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A35">
+        <xs:annotation>
+          <xs:documentation>MOL Responsible</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A36">
+        <xs:annotation>
+          <xs:documentation>Capacity Coordinator</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A37">
+        <xs:annotation>
+          <xs:documentation>Reconciliation Accountable</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A38">
+        <xs:annotation>
+          <xs:documentation>Reconciliation Responsible</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="A39">
+        <xs:annotation>
+          <xs:documentation>Data provider</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="UnavailabilityTypeList">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="Planned" />
+      <xs:enumeration value="Unplanned" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="XSDVersion">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="2.0">
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ZoneTypeList">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="N">
+        <xs:annotation>
+          <xs:documentation>National</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="B1" />
+      <xs:enumeration value="B2" />
+      <xs:enumeration value="B3" />
+      <xs:enumeration value="B4" />
+      <xs:enumeration value="B5" />
+      <xs:enumeration value="B6" />
+      <xs:enumeration value="B7" />
+      <xs:enumeration value="B8" />
+      <xs:enumeration value="B9" />
+      <xs:enumeration value="B10" />
+      <xs:enumeration value="B11" />
+      <xs:enumeration value="B12" />
+      <xs:enumeration value="B13" />
+      <xs:enumeration value="B14" />
+      <xs:enumeration value="B15" />
+      <xs:enumeration value="B16" />
+      <xs:enumeration value="B17" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

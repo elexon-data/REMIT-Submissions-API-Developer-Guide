@@ -48,7 +48,7 @@ This defaults to the `Test` environment and acquires an access token, reads the 
 
 ## Verify your submission
 
-Once you get a successful response, you can see the submission appear at [bmrs.test.elexon.co.uk/remit](https://bmrs.test.elexon.co.uk/remit).
+Once you get a successful response, you can see the submission appear on Insights at [bmrs.test.elexon.co.uk/remit](https://bmrs.test.elexon.co.uk/remit).
 
 Make sure your submission is correct before moving on to Prod.
 
