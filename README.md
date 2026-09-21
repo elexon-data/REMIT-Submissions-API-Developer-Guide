@@ -14,7 +14,9 @@ This repository contains example clients showing how to use the REMIT Submit API
 2. Generate your credentials by clicking 'Request Credentials'
    ![request-credentials](images/request-credentials.png)
 3. You will see a pop-up that shows your new client secret. Make sure you copy that, as it won't be shown again.
+![client-secret](images/client-secret.png)
 4. Note down your **Client ID** and **Client secret**. You will use them when calling the API.
+![client-id](images/client-id.png)
 
 ## Authentication
 
