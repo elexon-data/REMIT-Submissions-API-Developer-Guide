@@ -1,22 +1,41 @@
 import { readFile } from "node:fs/promises";
 import { ClientSecretCredential } from "@azure/identity";
-import config from "./config.js";
+import loadSettings from "./config.js";
 
-const scope = "https://data.dev.elexon.co.uk/account-api-v2/.default";
-const submitApi = "https://data.dev.elexon.co.uk/account/v2/remit/submit-api";
+const VALID_ENVIRONMENTS = ["Test", "Prod"];
 
-const getToken = async () => {
+const parseArgs = (args) => {
+    const envPrefix = "--env=";
+    const xmlPrefix = "--xml=";
+    let environmentName = "Test";
+    let xmlPath = null;
+    const unrecognizedArgs = [];
+
+    for (const arg of args) {
+        if (arg.toLowerCase().startsWith(envPrefix)) {
+            environmentName = arg.slice(envPrefix.length);
+        } else if (arg.toLowerCase().startsWith(xmlPrefix)) {
+            xmlPath = arg.slice(xmlPrefix.length);
+        } else {
+            unrecognizedArgs.push(arg);
+        }
+    }
+
+    return { environmentName, xmlPath, unrecognizedArgs };
+};
+
+const getToken = async (settings) => {
     const credential = new ClientSecretCredential(
-        config.tenantId,
-        config.clientId,
-        config.clientSecret
+        settings.tenantId,
+        settings.clientId,
+        settings.clientSecret
     );
 
-    const token = await credential.getToken(scope);
+    const token = await credential.getToken(settings.scope);
     return token.token;
 };
 
-const submit = async (token, xml) => {
+const submit = async (token, xml, submitApi) => {
     return fetch(submitApi, {
         method: "POST",
         headers: {
@@ -36,14 +55,27 @@ const prettifyJson = (text) => {
 };
 
 const main = async () => {
-    const xml = await readFile(config.xmlFilePath, "utf8");
+    const { environmentName, xmlPath, unrecognizedArgs } = parseArgs(process.argv.slice(2));
 
-    const token = await getToken();
-    const response = await submit(token, xml);
+    if (xmlPath === null || unrecognizedArgs.length > 0) {
+        console.error("Usage: node client.js [--env=Test|Prod] --xml=<path-to-remit-notification.xml>");
+        process.exit(1);
+    }
+
+    if (!VALID_ENVIRONMENTS.some((env) => env.toLowerCase() === environmentName.toLowerCase())) {
+        console.error(`--env must be one of: ${VALID_ENVIRONMENTS.join(", ")}. Got '${environmentName}'.`);
+        process.exit(1);
+    }
+
+    const settings = loadSettings(environmentName);
+
+    const xml = await readFile(xmlPath, "utf8");
+
+    const token = await getToken(settings);
+    const response = await submit(token, xml, settings.submitApi);
 
     console.log(`Status: ${response.status} ${response.statusText}`);
     const responseBody = await response.text();
-    console.log("Response:");
     console.log(prettifyJson(responseBody));
 
     if (!response.ok) {
