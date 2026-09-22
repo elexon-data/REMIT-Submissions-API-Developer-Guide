@@ -1,8 +1,8 @@
 # REMIT Submit API
 
-Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) publishes REMIT data to GB market participants. You can submit REMIT data programmatically using Insights' REMIT Submit API, instead of through the Elexon Portal UI.
+Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) serves as the Inside Information Platform (IIP) for the GB electricity market and provides GB market participants with an API capability to submit REMIT data, as set out under BSC Modification P497.
 
-The REMIT Submit API is a POST endpoint accepting xml, authenticated using OAuth 2.0 with the client credentials flow.
+The REMIT Submit API can be used instead of the existing Elexon Portal API or user interface. It is a POST endpoint that accepts XML and uses OAuth 2.0 authentication with the client credentials flow.
 
 This repository contains example clients showing how to use the REMIT Submit API. Currently we have clients written in **C#/.NET**, **Node.js**, and **Python**.
 
