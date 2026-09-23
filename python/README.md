@@ -1,28 +1,44 @@
-# .NET REMIT Submit Client
+# Python REMIT Submit Client
 
-A minimal .NET console client that authenticates with Microsoft Entra ID and submits a REMIT XML notification to the Elexon REMIT Submit API.
+A minimal Python client that authenticates with Microsoft Entra ID and submits a REMIT XML notification to the Elexon REMIT Submit API.
 
 This API is available in two environments, `Test` and `Prod`, each with its own credentials. **Start with `Test`** (the default), and once you've confirmed a submission works there, you can move on to [Using the Prod environment](#using-the-prod-environment).
 
 ## Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Python](https://www.python.org/downloads/) (version 3.11 or above is recommended)
 
 ## Configure
 
-1. Copy the settings template:
+1. From the `python` directory, create a virtual environment and install the dependencies:
 
    ```powershell
    # PowerShell (Windows/macOS/Linux)
-   Copy-Item appsettings.Test.template.json appsettings.Test.json
+   python -m venv .venv
+   ./.venv/Scripts/activate
+   pip install -r requirements.txt
    ```
 
    ```bash
    # bash/zsh (macOS/Linux) or Git Bash on Windows
-   cp appsettings.Test.template.json appsettings.Test.json
+   python -m venv .venv
+   source ./.venv/Scripts/activate
+   pip install -r requirements.txt
    ```
 
-2. Edit `appsettings.Test.json` and fill in your Test app registration's credentials (see [Retrieving Credentials](../../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet):
+2. Copy the settings template:
+
+   ```powershell
+   # PowerShell (Windows/macOS/Linux)
+   Copy-Item settings.Test.template.json settings.Test.json
+   ```
+
+   ```bash
+   # bash/zsh (macOS/Linux) or Git Bash on Windows
+   cp settings.Test.template.json settings.Test.json
+   ```
+
+3. Edit `settings.Test.json` and fill in your Test app registration's credentials (see [Retrieving Credentials](../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet):
 
    ```json
    {
@@ -37,12 +53,14 @@ This API is available in two environments, `Test` and `Prod`, each with its own 
    - `ClientId` / `ClientSecret`: your Test app registration's credentials
    - `Scope` / `SubmitApi` / `InsightsUrl`: the Test API's URLs. The template is already pre-filled with the correct values. You shouldn't need to change these
 
+   `settings.Test.json` is ignored by Git so your credentials will not be committed.
+
 ## Run
 
-From the `dotnet/RemitClient` directory:
+From the `python` directory, with the virtual environment activated:
 
 ```bash
-dotnet run -- --xml=path/to/your/remit-notification.xml
+python client.py --xml=path/to/your/remit-notification.xml
 ```
 
 This defaults to the `Test` environment and acquires an access token, reads the given XML file, submits it, and prints the HTTP status code and response body. A successful submission returns a `2xx` status.
@@ -57,8 +75,8 @@ Make sure your submission is correct before moving on to Prod.
 
 Once everything works end-to-end in `Test`, switch to `Prod` the same way, using your Prod app registration's credentials:
 
-1. Copy `appsettings.Prod.template.json` to `appsettings.Prod.json` (instead of `appsettings.Test.template.json` to `appsettings.Test.json`).
-2. Fill in your Prod app registration's `ClientId` and `ClientSecret` (see [Retrieving Credentials](../../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet). The `Scope`, `SubmitApi` and `InsightsUrl` values are already pre-filled for Prod.
+1. Copy `settings.Prod.template.json` to `settings.Prod.json` (instead of `settings.Test.template.json` to `settings.Test.json`).
+2. Fill in your Prod app registration's `ClientId` and `ClientSecret` (see [Retrieving Credentials](../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet). The `Scope`, `SubmitApi` and `InsightsUrl` values are already pre-filled for Prod.
 3. Run the same command as before, adding `--env=Prod`.
 
 A successful submission will appear at [bmrs.elexon.co.uk/remit](https://bmrs.elexon.co.uk/remit) instead.

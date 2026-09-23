@@ -60,7 +60,7 @@ We provide example clients in the following languages:
 
 Each client folder has its own `README.md` with setup and run instructions. All three follow the same flow:
 
-1. Load the `ClientId` and `ClientSecret` from a local settings file, and provide the path to your REMIT XML file (as a command-line argument for the .NET client, or via the settings file for the others).
+1. Load the `ClientId` and `ClientSecret` from a local settings file, and provide the path to your REMIT XML file as a command-line argument.
 2. Request an access token from Microsoft Entra ID using the `client_credentials` grant.
 3. `POST` the XML file's contents to the REMIT Submit API.
 4. Print the response.

@@ -11,7 +11,6 @@ namespace RemitClient;
 
 internal class Program
 {
-    private const string TenantId = "4203b7a0-7773-4de5-b830-8b263a20426e";
     private static readonly string[] ValidEnvironments = { "Test", "Prod" };
 
     private static async Task Main(string[] args)
@@ -40,7 +39,7 @@ internal class Program
         var settings = configuration.Get<Settings>()
             ?? throw new InvalidOperationException("Settings could not be loaded.");
 
-        settings.Validate(environmentName);
+        settings.Validate();
 
         var xml = await File.ReadAllTextAsync(xmlPath);
 
@@ -54,10 +53,16 @@ internal class Program
         var responseBody = await response.Content.ReadAsStringAsync();
         Console.WriteLine(PrettifyJson(responseBody));
 
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
+        {
+            if (!string.IsNullOrWhiteSpace(settings.InsightsUrl))
+            {
+                Console.WriteLine($"Check your submission at {settings.InsightsUrl}");
+            }
+        }
+        else
         {
             Console.Error.WriteLine($"Submission failed with status {(int)response.StatusCode} {response.StatusCode}.");
-            Environment.Exit(1);
         }
     }
 
@@ -76,7 +81,7 @@ internal class Program
 
     private static async Task<string> GetTokenAsync(Settings settings)
     {
-        var credential = new ClientSecretCredential(TenantId, settings.ClientId, settings.ClientSecret);
+        var credential = new ClientSecretCredential(settings.TenantId, settings.ClientId, settings.ClientSecret);
 
         var token = await credential.GetTokenAsync(new TokenRequestContext(new[] { settings.Scope }));
 
