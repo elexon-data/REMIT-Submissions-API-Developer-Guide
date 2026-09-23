@@ -29,12 +29,13 @@ This API is available in two environments, `Test` and `Prod`, each with its own 
      "ClientId": "your-test-client-id",
      "ClientSecret": "your-test-client-secret",
      "Scope": "https://data.test.elexon.co.uk/account-api-v2/.default",
-     "SubmitApi": "https://data.test.elexon.co.uk/account/v2/remit/submit-api"
+     "SubmitApi": "https://data.test.elexon.co.uk/account/v2/remit/submit-api",
+     "InsightsUrl": "https://bmrs.test.elexon.co.uk/remit"
    }
    ```
 
    - `ClientId` / `ClientSecret`: your Test app registration's credentials
-   - `Scope` / `SubmitApi`: the Test API's URLs. The template is already pre-filled with the correct values. You shouldn't need to change these
+   - `Scope` / `SubmitApi` / `InsightsUrl`: the Test API's URLs. The template is already pre-filled with the correct values. You shouldn't need to change these
 
 ## Run
 
@@ -56,33 +57,8 @@ Make sure your submission is correct before moving on to Prod.
 
 Once everything works end-to-end in `Test`, switch to `Prod` the same way, using your Prod app registration's credentials:
 
-1. Copy the Prod template:
+1. Copy `appsettings.Prod.template.json` to `appsettings.Prod.json` (instead of `appsettings.Test.template.json` to `appsettings.Test.json`).
+2. Fill in your Prod app registration's `ClientId` and `ClientSecret` (see [Retrieving Credentials](../../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet). The `Scope`, `SubmitApi` and `InsightsUrl` values are already pre-filled for Prod.
+3. Run the same command as before, adding `--env=Prod`.
 
-   ```powershell
-   # PowerShell (Windows/macOS/Linux)
-   Copy-Item appsettings.Prod.template.json appsettings.Prod.json
-   ```
-
-   ```bash
-   # bash/zsh (macOS/Linux) or Git Bash on Windows
-   cp appsettings.Prod.template.json appsettings.Prod.json
-   ```
-
-2. Edit `appsettings.Prod.json` and fill in your Prod app registration's credentials (see [Retrieving Credentials](../../README.md#before-you-begin-generate-your-credentials) in the main guide if you don't have these yet):
-
-   ```json
-   {
-     "ClientId": "your-prod-client-id",
-     "ClientSecret": "your-prod-client-secret",
-     "Scope": "https://data.elexon.co.uk/account-api-v2/.default",
-     "SubmitApi": "https://data.elexon.co.uk/account/v2/remit/submit-api"
-   }
-   ```
-
-3. Run with `--env=Prod`:
-
-   ```bash
-   dotnet run -- --env=Prod --xml=path/to/your/remit-notification.xml
-   ```
-
-   A successful submission will appear at [bmrs.elexon.co.uk/remit](https://bmrs.elexon.co.uk/remit) instead.
+A successful submission will appear at [bmrs.elexon.co.uk/remit](https://bmrs.elexon.co.uk/remit) instead.

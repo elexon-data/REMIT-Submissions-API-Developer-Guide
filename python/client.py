@@ -1,33 +1,20 @@
+import argparse
 import json
 import sys
 
 import requests
 from azure.identity import ClientSecretCredential
 
-from settings import Settings
+from settings import TENANT_ID, Settings
 
-# Elexon Products and Services tenant ID. Fixed for all users, so it's a
-# constant here rather than something read from settings.json.
-TENANT_ID = "4203b7a0-7773-4de5-b830-8b263a20426e"
 VALID_ENVIRONMENTS = ("Test", "Prod")
 
 
-def parse_args(args: list[str]) -> tuple[str, str | None, list[str]]:
-    env_prefix = '--env='
-    xml_prefix = '--xml='
-    environment_name = 'Test'
-    xml_path = None
-    unrecognized_args = []
-
-    for arg in args:
-        if arg.lower().startswith(env_prefix):
-            environment_name = arg[len(env_prefix):]
-        elif arg.lower().startswith(xml_prefix):
-            xml_path = arg[len(xml_prefix):]
-        else:
-            unrecognized_args.append(arg)
-
-    return environment_name, xml_path, unrecognized_args
+def parse_args(args: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(prog='client.py')
+    parser.add_argument('--env', dest='environment_name', default='Test', choices=VALID_ENVIRONMENTS)
+    parser.add_argument('--xml', dest='xml_path', metavar='PATH', required=True)
+    return parser.parse_args(args)
 
 
 def read_settings(environment_name: str) -> Settings:
@@ -56,26 +43,12 @@ def prettify_json(text: str) -> str:
 
 
 def run():
-    environment_name, xml_path, unrecognized_args = parse_args(sys.argv[1:])
+    parsed_args = parse_args(sys.argv[1:])
 
-    if xml_path is None or unrecognized_args:
-        print(
-            'Usage: python client.py [--env=Test|Prod] --xml=<path-to-remit-notification.xml>',
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    settings = read_settings(parsed_args.environment_name)
+    settings.validate(parsed_args.environment_name)
 
-    if environment_name.lower() not in (env.lower() for env in VALID_ENVIRONMENTS):
-        print(
-            f"--env must be one of: {', '.join(VALID_ENVIRONMENTS)}. Got '{environment_name}'.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    settings = read_settings(environment_name)
-    settings.validate(environment_name)
-
-    with open(xml_path) as xml_file:
+    with open(parsed_args.xml_path) as xml_file:
         xml = xml_file.read()
 
     token = get_access_token(settings)
@@ -87,6 +60,8 @@ def run():
     if not response.ok:
         print(f'Submission failed with status {response.status_code} {response.reason}.', file=sys.stderr)
         sys.exit(1)
+
+    print(f'Check your submission at {settings.InsightsUrl}')
 
 
 if __name__ == '__main__':

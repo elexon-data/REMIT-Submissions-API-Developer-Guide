@@ -2,5 +2,6 @@
   "ClientId": "",
   "ClientSecret": "",
   "Scope": "https://data.test.elexon.co.uk/account-api-v2/.default",
-  "SubmitApi": "https://data.test.elexon.co.uk/account/v2/remit/submit-api"
+  "SubmitApi": "https://data.test.elexon.co.uk/account/v2/remit/submit-api",
+  "InsightsUrl": "https://bmrs.test.elexon.co.uk/remit"
 }

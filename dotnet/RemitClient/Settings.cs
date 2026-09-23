@@ -2,10 +2,13 @@ namespace RemitClient;
 
 public sealed class Settings
 {
+    public const string TenantId = "4203b7a0-7773-4de5-b830-8b263a20426e";
+
     public string ClientId { get; set; } = string.Empty;
     public string ClientSecret { get; set; } = string.Empty;
     public string Scope { get; set; } = string.Empty;
     public string SubmitApi { get; set; } = string.Empty;
+    public string InsightsUrl { get; set; } = string.Empty;
 
     public void Validate(string environment)
     {
@@ -29,6 +32,11 @@ public sealed class Settings
         if (string.IsNullOrWhiteSpace(SubmitApi))
         {
             throw new InvalidOperationException($"SubmitApi is required in {envFile}.");
+        }
+
+        if (string.IsNullOrWhiteSpace(InsightsUrl))
+        {
+            throw new InvalidOperationException($"InsightsUrl is required in {envFile}.");
         }
     }
 }

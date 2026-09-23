@@ -11,7 +11,6 @@ namespace RemitClient;
 
 internal class Program
 {
-    private const string TenantId = "4203b7a0-7773-4de5-b830-8b263a20426e";
     private static readonly string[] ValidEnvironments = { "Test", "Prod" };
 
     private static async Task Main(string[] args)
@@ -58,7 +57,10 @@ internal class Program
         {
             Console.Error.WriteLine($"Submission failed with status {(int)response.StatusCode} {response.StatusCode}.");
             Environment.Exit(1);
+            return;
         }
+
+        Console.WriteLine($"Check your submission at {settings.InsightsUrl}");
     }
 
     private static string PrettifyJson(string json)
@@ -76,7 +78,7 @@ internal class Program
 
     private static async Task<string> GetTokenAsync(Settings settings)
     {
-        var credential = new ClientSecretCredential(TenantId, settings.ClientId, settings.ClientSecret);
+        var credential = new ClientSecretCredential(Settings.TenantId, settings.ClientId, settings.ClientSecret);
 
         var token = await credential.GetTokenAsync(new TokenRequestContext(new[] { settings.Scope }));
 
