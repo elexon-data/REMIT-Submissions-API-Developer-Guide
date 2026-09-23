@@ -35,7 +35,7 @@ To create a pull request:
 
 ## Proposing new features
 
-The best way to share feature requests is to contact us directly at `insightssupport@elexon.co.uk`.
+The best way to share feature requests is to raise a support ticket at  [Elexon Support](https://support.elexon.co.uk/csm) using the subcategory "General REMIT publication query".
 
 Alternatively, you could raise a pull request with the proposed changes.
 

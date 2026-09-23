@@ -70,7 +70,7 @@ Each client folder has its own `README.md` with setup and run instructions. All 
 
 ## Feedback
 
-We're continuously improving REMIT submission. Help us improve the service by sharing your feedback at insightssupport@elexon.co.uk.
+We're continuously improving REMIT submission. Help us improve the service by raising a support request at [Elexon Support](https://support.elexon.co.uk/csm).
 
 We also welcome contributions and suggestions directly to this repository. Please see our [contributing guidelines](./CONTRIBUTING.md) for more information.
 
