@@ -4,7 +4,9 @@ Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) serves as the Insi
 
 The REMIT Submit API can be used instead of the existing Elexon Portal API or user interface. It is a POST endpoint that accepts XML and uses OAuth 2.0 authentication with the client credentials flow.
 
-This repository contains example clients showing how to use the REMIT Submit API. Currently we have clients written in **C#/.NET**, **Node.js**, and **Python**.
+This repository contains example clients showing how to use the REMIT Submit API. Currently we have clients written in **C#/.NET** and **Python**. A NodeJS client is under development.
+
+> Please note that this functionality is currently under development. The production endpoint is not yet live.
 
 ## Before you begin: generate your credentials
 
@@ -14,9 +16,9 @@ This repository contains example clients showing how to use the REMIT Submit API
 2. Generate your credentials by clicking 'Request Credentials'
    ![request-credentials](images/request-credentials.png)
 3. You will see a pop-up that shows your new client secret. Make sure you copy that, as it won't be shown again.
-![client-secret](images/client-secret.png)
+   ![client-secret](images/client-secret.png)
 4. Note down your **Client ID** and **Client secret**. You will use them when calling the API.
-![client-id](images/client-id.png)
+   ![client-id](images/client-id.png)
 
 ## Authentication
 
@@ -27,10 +29,10 @@ Use your client ID and client secret to fetch your access token using the follow
 
 The scope and submit endpoint are dependent on environment:
 
-| Environment | Scope | Submit endpoint |
-| --- | --- | --- |
-| Test | `https://data.test.elexon.co.uk/account-api-v2/.default` | `POST https://data.test.elexon.co.uk/account/v2/remit/submit-api` |
-| Prod | `https://data.elexon.co.uk/account-api-v2/.default` | `POST https://data.elexon.co.uk/account/v2/remit/submit-api` |
+| Environment | Scope                                                    | Submit endpoint                                                   |
+| ----------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
+| Test        | `https://data.test.elexon.co.uk/account-api-v2/.default` | `POST https://data.test.elexon.co.uk/account/v2/remit/submit-api` |
+| Prod        | `https://data.elexon.co.uk/account-api-v2/.default`      | `POST https://data.elexon.co.uk/account/v2/remit/submit-api`      |
 
 ## Writing your REMIT XML
 
@@ -54,9 +56,10 @@ See [`Response codes`](RESPONSE_CODES.md) for the REMIT Submit API's success/err
 ## Example clients
 
 We provide example clients in the following languages:
+
 - [C# / .NET](dotnet/RemitClient/README.md)
-- [Node.js](nodeJs/README.md)
 - [Python](python/README.md)
+- A NodeJS client is currently under development.
 
 Each client folder has its own `README.md` with setup and run instructions. All three follow the same flow:
 

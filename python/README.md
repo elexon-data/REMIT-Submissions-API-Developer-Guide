@@ -4,6 +4,9 @@ A minimal Python client that authenticates with Microsoft Entra ID and submits a
 
 This API is available in two environments, `Test` and `Prod`, each with its own credentials. **Start with `Test`** (the default), and once you've confirmed a submission works there, you can move on to [Using the Prod environment](#using-the-prod-environment).
 
+> Please note that this functionality is currently under development. The production endpoint is not yet live.
+
+
 ## Prerequisites
 
 - [Python](https://www.python.org/downloads/) (version 3.11 or above is recommended)

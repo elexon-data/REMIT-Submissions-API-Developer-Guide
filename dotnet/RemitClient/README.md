@@ -4,6 +4,8 @@ A minimal .NET console client that authenticates with Microsoft Entra ID and sub
 
 This API is available in two environments, `Test` and `Prod`, each with its own credentials. **Start with `Test`** (the default), and once you've confirmed a submission works there, you can move on to [Using the Prod environment](#using-the-prod-environment).
 
+> Please note that this functionality is currently under development. The production endpoint is not yet live.
+
 ## Prerequisites
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
