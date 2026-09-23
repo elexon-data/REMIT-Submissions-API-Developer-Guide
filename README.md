@@ -72,6 +72,15 @@ Each client folder has its own `README.md` with setup and run instructions. All 
 
 We're continuously improving REMIT submission. Help us improve the service by raising a support request at [Elexon Support](https://support.elexon.co.uk/csm).
 
+You may mark your support request with the following categories:
+
+| Category | Impact |
+|---|---|
+| Insights REMIT submission issue | High |
+| Elexon portal REMIT submission issue | High |
+| REMIT registration issue | High |
+| General REMIT publication query | Medium |
+
 We also welcome contributions and suggestions directly to this repository. Please see our [contributing guidelines](./CONTRIBUTING.md) for more information.
 
 ## License
