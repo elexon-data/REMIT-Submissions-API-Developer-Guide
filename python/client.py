@@ -5,7 +5,7 @@ import sys
 import requests
 from azure.identity import ClientSecretCredential
 
-from settings import TENANT_ID, Settings
+from settings import Settings
 
 VALID_ENVIRONMENTS = ("Test", "Prod")
 
@@ -23,7 +23,7 @@ def read_settings(environment_name: str) -> Settings:
 
 
 def get_access_token(settings: Settings) -> str:
-    credential = ClientSecretCredential(TENANT_ID, settings.ClientId, settings.ClientSecret)
+    credential = ClientSecretCredential(settings.TenantId, settings.ClientId, settings.ClientSecret)
     return credential.get_token(settings.Scope).token
 
 
@@ -46,7 +46,7 @@ def run():
     parsed_args = parse_args(sys.argv[1:])
 
     settings = read_settings(parsed_args.environment_name)
-    settings.validate(parsed_args.environment_name)
+    settings.validate()
 
     with open(parsed_args.xml_path) as xml_file:
         xml = xml_file.read()
@@ -57,11 +57,11 @@ def run():
     print(f'Status: {response.status_code} {response.reason}')
     print(prettify_json(response.text))
 
-    if not response.ok:
+    if response.ok:
+        if settings.InsightsUrl:
+            print(f'Check your submission at {settings.InsightsUrl}')
+    else:
         print(f'Submission failed with status {response.status_code} {response.reason}.', file=sys.stderr)
-        sys.exit(1)
-
-    print(f'Check your submission at {settings.InsightsUrl}')
 
 
 if __name__ == '__main__':
