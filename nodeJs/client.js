@@ -1,27 +1,37 @@
 import { readFile } from "node:fs/promises";
+import { parseArgs as parseNodeArgs } from "node:util";
 import { ClientSecretCredential } from "@azure/identity";
 import loadSettings from "./config.js";
 
 const VALID_ENVIRONMENTS = ["Test", "Prod"];
 
 const parseArgs = (args) => {
-    const envPrefix = "--env=";
-    const xmlPrefix = "--xml=";
-    let environmentName = "Test";
-    let xmlPath = null;
-    const unrecognizedArgs = [];
+    const usage = "Usage: npm run client -- [--env=Test|Prod] --xml=<path-to-remit-notification.xml>";
 
-    for (const arg of args) {
-        if (arg.toLowerCase().startsWith(envPrefix)) {
-            environmentName = arg.slice(envPrefix.length);
-        } else if (arg.toLowerCase().startsWith(xmlPrefix)) {
-            xmlPath = arg.slice(xmlPrefix.length);
-        } else {
-            unrecognizedArgs.push(arg);
-        }
+    let values;
+    try {
+        ({ values } = parseNodeArgs({
+            args,
+            options: {
+                env: { type: "string", default: "Test" },
+                xml: { type: "string" },
+            },
+            strict: true,
+        }));
+    } catch {
+        return { environmentName: null, xmlPath: null, error: usage };
     }
 
-    return { environmentName, xmlPath, unrecognizedArgs };
+    if (values.xml === undefined) {
+        return { environmentName: null, xmlPath: null, error: usage };
+    }
+
+    if (!VALID_ENVIRONMENTS.some((env) => env.toLowerCase() === values.env.toLowerCase())) {
+        const error = `--env must be one of: ${VALID_ENVIRONMENTS.join(", ")}. Got '${values.env}'.`;
+        return { environmentName: null, xmlPath: null, error };
+    }
+
+    return { environmentName: values.env, xmlPath: values.xml, error: null };
 };
 
 const getToken = async (settings) => {
@@ -55,15 +65,10 @@ const prettifyJson = (text) => {
 };
 
 const main = async () => {
-    const { environmentName, xmlPath, unrecognizedArgs } = parseArgs(process.argv.slice(2));
+    const { environmentName, xmlPath, error } = parseArgs(process.argv.slice(2));
 
-    if (xmlPath === null || unrecognizedArgs.length > 0) {
-        console.error("Usage: node client.js [--env=Test|Prod] --xml=<path-to-remit-notification.xml>");
-        process.exit(1);
-    }
-
-    if (!VALID_ENVIRONMENTS.some((env) => env.toLowerCase() === environmentName.toLowerCase())) {
-        console.error(`--env must be one of: ${VALID_ENVIRONMENTS.join(", ")}. Got '${environmentName}'.`);
+    if (error) {
+        console.error(error);
         process.exit(1);
     }
 
@@ -78,9 +83,12 @@ const main = async () => {
     const responseBody = await response.text();
     console.log(prettifyJson(responseBody));
 
-    if (!response.ok) {
+    if (response.ok) {
+        if (settings.insightsUrl) {
+            console.log(`Check your submission at ${settings.insightsUrl}`);
+        }
+    } else {
         console.error(`Submission failed with status ${response.status} ${response.statusText}.`);
-        process.exit(1);
     }
 };
 
