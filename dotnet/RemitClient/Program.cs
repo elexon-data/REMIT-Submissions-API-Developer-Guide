@@ -15,18 +15,11 @@ internal class Program
 
     private static async Task Main(string[] args)
     {
-        var (environmentName, xmlPath, unrecognizedArgs) = ParseArgs(args);
+        var (environmentName, xmlPath, error) = ParseArgs(args);
 
-        if (xmlPath is null || unrecognizedArgs.Count > 0)
+        if (error is not null)
         {
-            Console.Error.WriteLine("Usage: dotnet run -- [--env=Test|Prod] --xml=<path-to-remit-notification.xml>");
-            Environment.Exit(1);
-            return;
-        }
-
-        if (!ValidEnvironments.Contains(environmentName, StringComparer.OrdinalIgnoreCase))
-        {
-            Console.Error.WriteLine($"--env must be one of: {string.Join(", ", ValidEnvironments)}. Got '{environmentName}'.");
+            Console.Error.WriteLine(error);
             Environment.Exit(1);
             return;
         }
@@ -41,7 +34,7 @@ internal class Program
 
         settings.Validate();
 
-        var xml = await File.ReadAllTextAsync(xmlPath);
+        var xml = await File.ReadAllTextAsync(xmlPath!);
 
         using var client = new HttpClient();
 
@@ -99,10 +92,12 @@ internal class Program
         return await client.SendAsync(request);
     }
 
-    private static (string EnvironmentName, string? XmlPath, List<string> UnrecognizedArgs) ParseArgs(string[] args)
+    private static (string? EnvironmentName, string? XmlPath, string? Error) ParseArgs(string[] args)
     {
         const string EnvPrefix = "--env=";
         const string XmlPrefix = "--xml=";
+        const string Usage = "Usage: dotnet run -- [--env=Test|Prod] --xml=<path-to-remit-notification.xml>";
+
         var environmentName = "Test";
         string? xmlPath = null;
         var unrecognizedArgs = new List<string>();
@@ -123,6 +118,16 @@ internal class Program
             }
         }
 
-        return (environmentName, xmlPath, unrecognizedArgs);
+        if (xmlPath is null || unrecognizedArgs.Count > 0)
+        {
+            return (null, null, Usage);
+        }
+
+        if (!ValidEnvironments.Contains(environmentName, StringComparer.OrdinalIgnoreCase))
+        {
+            return (null, null, $"--env must be one of: {string.Join(", ", ValidEnvironments)}. Got '{environmentName}'.");
+        }
+
+        return (environmentName, xmlPath, null);
     }
 }
