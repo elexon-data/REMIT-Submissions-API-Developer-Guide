@@ -56,8 +56,6 @@ This API is available in two environments, `Test` and `Prod`, each with its own 
    - `ClientId` / `ClientSecret`: your Test app registration's credentials
    - `Scope` / `SubmitApi` / `InsightsUrl`: the Test API's URLs. The template is already pre-filled with the correct values. You shouldn't need to change these
 
-   `settings.Test.json` is ignored by Git so your credentials will not be committed.
-
 ## Run
 
 From the `python` directory, with the virtual environment activated:
