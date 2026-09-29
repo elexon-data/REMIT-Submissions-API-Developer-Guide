@@ -4,7 +4,7 @@ Elexon's [Insights Solution](https://bmrs.elexon.co.uk/remit) serves as the Insi
 
 The REMIT Submit API can be used instead of the existing Elexon Portal API or user interface. It is a POST endpoint that accepts XML and uses OAuth 2.0 authentication with the client credentials flow.
 
-This repository contains example clients showing how to use the REMIT Submit API. Currently we have clients written in **C#/.NET** and **Python**. A NodeJS client is under development.
+This repository contains example clients showing how to use the REMIT Submit API. Currently we have clients written in **C#/.NET**, **Python** and **NodeJS**.
 
 > Please note that this functionality is currently under development. The production endpoint is not yet live.
 
@@ -59,7 +59,7 @@ We provide example clients in the following languages:
 
 - [C# / .NET](dotnet/RemitClient/README.md)
 - [Python](python/README.md)
-- A NodeJS client is currently under development.
+- [NodeJS](nodeJs/README.md)
 
 Each client folder has its own `README.md` with setup and run instructions. All three follow the same flow:
 
